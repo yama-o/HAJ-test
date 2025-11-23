@@ -11,8 +11,8 @@
     <style>
         /* --- 1. ベース設定 --- */
         :root {
-            --bg-deep: #050810;     /* メイン背景 */
-            --bg-card: #0f141e;     /* カード背景 */
+            --bg-deep: #050810;
+            --bg-card: #0f141e;
             --text-main: #ffffff;
             --text-sub: #a0a0a0;
             --accent-cyan: #00f0ff;
@@ -23,7 +23,7 @@
             --font-jp: 'Noto Sans JP', sans-serif;
         }
 
-        html { scroll-behavior: smooth; } /* スムーズスクロール */
+        html { scroll-behavior: smooth; }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -39,7 +39,6 @@
         ul { list-style: none; }
         img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-        /* 全体コンテナ（左右の光る枠線） */
         .wrapper {
             max-width: 1200px;
             margin: 0 auto;
@@ -84,87 +83,105 @@
         }
         nav a:hover { color: var(--accent-cyan); text-shadow: 0 0 8px var(--accent-cyan); }
 
-        /* --- 3. ヒーローセクション --- */
+        /* --- 3. ヒーローセクション (カルーセル改修版) --- */
         .hero {
             height: 80vh;
-            background: linear-gradient(to bottom, rgba(5,8,16,0.2), var(--bg-deep)), 
-                        url('https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=2574&auto=format&fit=crop');
+            position: relative;
+            overflow: hidden; /* はみ出し防止 */
+        }
+
+        /* 各スライドの共通スタイル */
+        .hero-slide {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            opacity: 0; /* デフォルトは非表示 */
+            transition: opacity 1s ease-in-out; /* フェードアニメーション */
             background-size: cover;
             background-position: center;
             display: flex;
             align-items: center;
             padding: 0 5%;
+            z-index: 1;
+        }
+        
+        /* 背景を暗くするオーバーレイ */
+        .hero-slide::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(5,8,16,0.3), var(--bg-deep));
+            z-index: 1;
         }
 
-        .hero-content { margin-top: 50px; }
+        /* アクティブなスライドだけ表示 */
+        .hero-slide.active { opacity: 1; z-index: 2; }
+
+        .hero-content {
+            position: relative; z-index: 3; margin-top: 50px;
+            transform: translateY(30px); opacity: 0; transition: 1s ease;
+        }
+
+        /* スライドが表示されたときに文字も浮き上がる */
+        .hero-slide.active .hero-content {
+            transform: translateY(0); opacity: 1; transition-delay: 0.3s;
+        }
+
         .hero-content h1 {
-            font-size: 4rem;
-            line-height: 1;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-            text-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+            font-size: 4rem; line-height: 1; text-transform: uppercase;
+            margin-bottom: 20px; text-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
         }
         .hero-content p { color: var(--text-sub); font-size: 1.2rem; max-width: 500px; }
+
+        /* カルーセル操作ボタン */
+        .carousel-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2);
+            color: #fff; font-size: 2rem; width: 50px; height: 50px;
+            border-radius: 50%; cursor: pointer; z-index: 10;
+            display: flex; align-items: center; justify-content: center;
+            transition: 0.3s;
+        }
+        .carousel-btn:hover { background: var(--accent-cyan); color: #000; border-color: var(--accent-cyan); }
+        .prev-btn { left: 20px; }
+        .next-btn { right: 20px; }
 
         /* --- 共通: セクション見出し --- */
         section { padding: 80px 5%; border-bottom: 1px solid rgba(255,255,255,0.05); }
         
         .section-title {
-            text-align: center;
-            font-size: 2rem;
-            font-weight: 900;
-            margin-bottom: 50px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
+            text-align: center; font-size: 2rem; font-weight: 900;
+            margin-bottom: 50px; text-transform: uppercase; letter-spacing: 2px;
+            display: flex; align-items: center; justify-content: center; gap: 15px;
         }
-        /* 見出し横の光るバー */
         .section-title::before, .section-title::after {
             content: ''; display: block; width: 50px; height: 4px;
             background: var(--accent-cyan); box-shadow: 0 0 10px var(--accent-cyan);
         }
         .section-title::after { background: var(--accent-orange); box-shadow: 0 0 10px var(--accent-orange); }
 
-        /* --- 4. Staff Picks (Cards) --- */
-        .staff-picks {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-
+        /* --- 4. Staff Picks --- */
+        .staff-picks { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
         .card {
-            background: var(--bg-card);
-            border: 1px solid #333;
-            border-radius: 8px;
-            overflow: hidden;
-            transition: 0.3s;
+            background: var(--bg-card); border: 1px solid #333; border-radius: 8px;
+            overflow: hidden; transition: 0.3s;
         }
         .card:hover { transform: translateY(-5px); border-color: var(--accent-cyan); box-shadow: 0 0 15px rgba(0, 240, 255, 0.2); }
-        
         .card-image { height: 220px; overflow: hidden; }
         .card-image img { transition: 0.5s; }
         .card:hover .card-image img { transform: scale(1.1); }
-
         .card-content { padding: 20px; }
         .card-content h3 { font-size: 1.2rem; margin-bottom: 8px; color: #fff; }
         .card-content p { font-size: 0.9rem; color: var(--text-sub); }
 
-        /* --- 5. SEASONAL TIER LIST --- */
+        /* --- 5. TIER LIST --- */
         .tier-container { display: flex; flex-direction: column; gap: 15px; }
         .tier-row { display: flex; background: #111; border-radius: 4px; overflow: hidden; }
-
         .tier-label {
             width: 100px; display: flex; align-items: center; justify-content: center;
             font-size: 2rem; font-weight: 900; color: #000; flex-shrink: 0;
         }
-        
         .tier-s { background: var(--accent-pink); box-shadow: 0 0 15px var(--accent-pink); }
         .tier-a { background: var(--accent-orange); }
         .tier-b { background: var(--accent-cyan); }
-
         .tier-items { display: flex; flex-wrap: wrap; padding: 10px; gap: 10px; flex-grow: 1; }
         .tier-img {
             width: 80px; height: 80px; border-radius: 4px; overflow: hidden;
@@ -172,120 +189,51 @@
         }
         .tier-img:hover { border-color: #fff; transform: scale(1.1); }
 
-        /* --- 6. LATEST STREAM --- */
-        .stream-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 40px; justify-content: center;
-        }
-
+        /* --- 6. STREAM --- */
+        .stream-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; justify-content: center; }
         .stream-card {
-            background: #000; border-radius: 16px; padding: 12px;
-            border: 1px solid #333; transition: 0.3s; position: relative;
+            background: #000; border-radius: 16px; padding: 12px; border: 1px solid #333; transition: 0.3s; position: relative;
         }
         .stream-card:hover { transform: translateY(-10px); }
-        
-        /* 各SNSカラー */
         .tiktok-glow:hover { border-color: #00f0ff; box-shadow: 0 0 20px rgba(0, 240, 255, 0.4); }
         .insta-glow:hover { border-color: #e1306c; box-shadow: 0 0 20px rgba(225, 48, 108, 0.4); }
         .youtube-glow:hover { border-color: #ff0000; box-shadow: 0 0 20px rgba(255, 0, 0, 0.4); }
-
-        .stream-header {
-            display: flex; align-items: center; gap: 10px;
-            margin-bottom: 10px; font-weight: bold; font-size: 0.9rem;
-        }
-
-        .embed-dummy {
-            aspect-ratio: 9 / 16; background: #222; border-radius: 12px;
-            overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center;
-        }
+        .stream-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-weight: bold; font-size: 0.9rem; }
+        .embed-dummy { aspect-ratio: 9 / 16; background: #222; border-radius: 12px; overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center; }
         .play-icon { font-size: 3rem; color: rgba(255,255,255,0.7); }
 
-        /* --- 7. OUTFIT / LOOKBOOK --- */
-        .lookbook-slider {
-            display: flex; gap: 20px; overflow-x: auto; padding: 20px 0;
-            scrollbar-width: thin; scrollbar-color: var(--accent-cyan) #222;
-        }
-        
-        .look-item {
-            min-width: 250px; height: 400px; position: relative;
-            border-radius: 4px; overflow: hidden; cursor: pointer;
-        }
-        .look-item::after {
-            content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 50%;
-            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-        }
-        
+        /* --- 7. LOOKBOOK --- */
+        .lookbook-slider { display: flex; gap: 20px; overflow-x: auto; padding: 20px 0; scrollbar-width: thin; scrollbar-color: var(--accent-cyan) #222; }
+        .look-item { min-width: 250px; height: 400px; position: relative; border-radius: 4px; overflow: hidden; cursor: pointer; }
+        .look-item::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 50%; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); }
         .look-info { position: absolute; bottom: 20px; left: 15px; z-index: 2; }
-        .brand-tag {
-            background: var(--accent-cyan); color: #000; padding: 4px 10px;
-            font-size: 0.7rem; font-weight: 900; text-transform: uppercase;
-            display: inline-block; margin-bottom: 5px;
-        }
+        .brand-tag { background: var(--accent-cyan); color: #000; padding: 4px 10px; font-size: 0.7rem; font-weight: 900; text-transform: uppercase; display: inline-block; margin-bottom: 5px; }
 
         /* --- 8. EVENTS --- */
-        .events-scroller {
-            display: flex; gap: 20px; overflow-x: auto; padding-bottom: 20px;
-            scrollbar-width: thin; scrollbar-color: var(--accent-orange) #222;
-        }
-        .event-item {
-            min-width: 300px; background: var(--bg-card); border: 1px solid #333;
-            padding: 20px; border-radius: 8px; display: flex; align-items: center; gap: 15px;
-        }
-        .event-date {
-            background: #fff; color: #000; padding: 10px; font-weight: bold;
-            border-radius: 4px; text-align: center; line-height: 1.2;
-        }
+        .events-scroller { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 20px; scrollbar-width: thin; scrollbar-color: var(--accent-orange) #222; }
+        .event-item { min-width: 300px; background: var(--bg-card); border: 1px solid #333; padding: 20px; border-radius: 8px; display: flex; align-items: center; gap: 15px; }
+        .event-date { background: #fff; color: #000; padding: 10px; font-weight: bold; border-radius: 4px; text-align: center; line-height: 1.2; }
 
-        /* --- 9. COLLABORATION (PARTNERS) --- */
-        #partners {
-            background: linear-gradient(to top, #020305, var(--bg-deep));
-            text-align: center; padding-bottom: 80px; border-bottom: none;
-        }
-
-        .partner-grid {
-            display: flex; justify-content: center; flex-wrap: wrap;
-            gap: 40px 60px; margin-bottom: 60px; opacity: 0.7;
-        }
-
-        .partner-logo {
-            display: flex; flex-direction: column; align-items: center; gap: 10px;
-            font-size: 3rem; color: #555; cursor: pointer; transition: 0.4s ease;
-        }
-        .partner-logo span {
-            font-size: 0.8rem; font-weight: 700; letter-spacing: 2px;
-            opacity: 0; transform: translateY(10px); transition: 0.4s ease;
-        }
-        .partner-logo:hover {
-            color: #fff; transform: scale(1.1);
-            text-shadow: 0 0 15px var(--accent-cyan); filter: drop-shadow(0 0 10px var(--accent-cyan));
-        }
+        /* --- 9. PARTNERS --- */
+        #partners { background: linear-gradient(to top, #020305, var(--bg-deep)); text-align: center; padding-bottom: 80px; border-bottom: none; }
+        .partner-grid { display: flex; justify-content: center; flex-wrap: wrap; gap: 40px 60px; margin-bottom: 60px; opacity: 0.7; }
+        .partner-logo { display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 3rem; color: #555; cursor: pointer; transition: 0.4s ease; }
+        .partner-logo span { font-size: 0.8rem; font-weight: 700; letter-spacing: 2px; opacity: 0; transform: translateY(10px); transition: 0.4s ease; }
+        .partner-logo:hover { color: #fff; transform: scale(1.1); text-shadow: 0 0 15px var(--accent-cyan); filter: drop-shadow(0 0 10px var(--accent-cyan)); }
         .partner-logo:hover span { opacity: 1; transform: translateY(0); color: var(--accent-cyan); }
-
-        /* ブランド別カラー */
         .partner-logo:nth-child(1):hover { color: #003791; text-shadow: 0 0 15px #003791; }
         .partner-logo:nth-child(2):hover { color: #171a21; text-shadow: 0 0 15px #fff; }
         .partner-logo:nth-child(3):hover { color: #5865F2; text-shadow: 0 0 15px #5865F2; }
         .partner-logo:nth-child(4):hover { color: #1DB954; text-shadow: 0 0 15px #1DB954; }
         .partner-logo:nth-child(5):hover { color: #9146FF; text-shadow: 0 0 15px #9146FF; }
-
-        /* コンタクトボタン */
         .collab-cta p { color: var(--text-sub); margin-bottom: 20px; font-size: 0.9rem; }
-        .btn-neon {
-            display: inline-block; padding: 15px 40px; border: 2px solid var(--accent-cyan);
-            color: var(--accent-cyan); font-weight: 900; text-transform: uppercase;
-            letter-spacing: 2px; border-radius: 4px; position: relative; overflow: hidden; z-index: 1;
-        }
-        .btn-neon::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 0%; height: 100%;
-            background: var(--accent-cyan); z-index: -1; transition: 0.4s ease;
-        }
+        .btn-neon { display: inline-block; padding: 15px 40px; border: 2px solid var(--accent-cyan); color: var(--accent-cyan); font-weight: 900; text-transform: uppercase; letter-spacing: 2px; border-radius: 4px; position: relative; overflow: hidden; z-index: 1; }
+        .btn-neon::before { content: ''; position: absolute; top: 0; left: 0; width: 0%; height: 100%; background: var(--accent-cyan); z-index: -1; transition: 0.4s ease; }
         .btn-neon:hover { color: #000; box-shadow: 0 0 20px var(--accent-cyan); }
         .btn-neon:hover::before { width: 100%; }
 
         /* --- 10. Footer --- */
-        footer {
-            padding: 50px 5%; background: #020305; text-align: center; border-top: 1px solid #222;
-        }
+        footer { padding: 50px 5%; background: #020305; text-align: center; border-top: 1px solid #222; }
         .social-links { font-size: 1.5rem; margin-bottom: 20px; display: flex; justify-content: center; gap: 20px; }
         .social-links i:hover { color: var(--accent-orange); transform: scale(1.2); transition: 0.3s; }
         
@@ -293,10 +241,11 @@
         @media (max-width: 768px) {
             .hero-content h1 { font-size: 2.5rem; }
             header { padding: 15px; }
-            nav ul { display: none; } /* ハンバーガーメニュー未実装のため非表示 */
+            nav ul { display: none; }
             .tier-label { width: 60px; font-size: 1.5rem; }
             .tier-img { width: 60px; height: 60px; }
             .btn-neon { padding: 12px 30px; font-size: 0.9rem; }
+            .carousel-btn { width: 40px; height: 40px; font-size: 1.5rem; }
         }
     </style>
 </head>
@@ -317,11 +266,31 @@
             </nav>
         </header>
 
-        <section class="hero">
-            <div class="hero-content">
-                <h1>Anime Culture<br>& Cyber Style.</h1>
-                <p>Curating the best of modern anime lifestyle, fashion, and tech.</p>
+        <section class="hero" id="home">
+            
+            <div class="hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=2574&auto=format&fit=crop');">
+                <div class="hero-content">
+                    <h1>Anime Culture<br>& Cyber Style.</h1>
+                    <p>Curating the best of modern anime lifestyle, fashion, and tech.</p>
+                </div>
             </div>
+
+            <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1555680202-c86f0e12f086?q=80&w=2670&auto=format&fit=crop');">
+                <div class="hero-content">
+                    <h1>Tokyo Night<br>Vibes</h1>
+                    <p>Experience the neon-lit streets and underground anime scenes.</p>
+                </div>
+            </div>
+
+            <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=2568&auto=format&fit=crop');">
+                <div class="hero-content">
+                    <h1>Next Gen<br>Creators</h1>
+                    <p>Highlighting the artists shaping the future of digital entertainment.</p>
+                </div>
+            </div>
+
+            <button class="carousel-btn prev-btn" onclick="moveSlide(-1)">&#10094;</button>
+            <button class="carousel-btn next-btn" onclick="moveSlide(1)">&#10095;</button>
         </section>
 
         <section id="picks">
@@ -373,7 +342,6 @@
                     <div class="tier-label tier-b">B</div>
                     <div class="tier-items">
                         <div class="tier-img"><img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=200&auto=format&fit=crop" alt="Anime"></div>
-                        <div class="tier-img"><img src="https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=200&auto=format&fit=crop" alt="Anime"></div>
                     </div>
                 </div>
             </div>
@@ -411,31 +379,19 @@
             <div class="lookbook-slider">
                 <div class="look-item">
                     <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=600&auto=format&fit=crop" alt="Fashion">
-                    <div class="look-info">
-                        <span class="brand-tag">HYPER STORE</span>
-                        <h4>Neon Jacket V2</h4>
-                    </div>
+                    <div class="look-info"><span class="brand-tag">HYPER STORE</span><h4>Neon Jacket V2</h4></div>
                 </div>
                 <div class="look-item">
                     <img src="https://images.unsplash.com/photo-1529139574466-a302d27460a0?q=80&w=600&auto=format&fit=crop" alt="Fashion">
-                    <div class="look-info">
-                        <span class="brand-tag">TOKYO BASE</span>
-                        <h4>Graphic Tee</h4>
-                    </div>
+                    <div class="look-info"><span class="brand-tag">TOKYO BASE</span><h4>Graphic Tee</h4></div>
                 </div>
                 <div class="look-item">
                     <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=600&auto=format&fit=crop" alt="Fashion">
-                    <div class="look-info">
-                        <span class="brand-tag">UNIQLO</span>
-                        <h4>UT Collection</h4>
-                    </div>
+                    <div class="look-info"><span class="brand-tag">UNIQLO</span><h4>UT Collection</h4></div>
                 </div>
                 <div class="look-item">
                     <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=600&auto=format&fit=crop" alt="Fashion">
-                    <div class="look-info">
-                        <span class="brand-tag">NIKE</span>
-                        <h4>Cyber Kicks</h4>
-                    </div>
+                    <div class="look-info"><span class="brand-tag">NIKE</span><h4>Cyber Kicks</h4></div>
                 </div>
             </div>
         </section>
@@ -445,24 +401,15 @@
             <div class="events-scroller">
                 <div class="event-item">
                     <div class="event-date">MAR<br>25</div>
-                    <div>
-                        <h4>Tokyo Anime Fair</h4>
-                        <span style="color:var(--text-sub); font-size:0.8rem;">Tokyo Big Sight</span>
-                    </div>
+                    <div><h4>Tokyo Anime Fair</h4><span style="color:var(--text-sub); font-size:0.8rem;">Tokyo Big Sight</span></div>
                 </div>
                 <div class="event-item" style="border-color: var(--accent-orange);">
                     <div class="event-date" style="background: var(--accent-orange); color:#fff;">JUL<br>01</div>
-                    <div>
-                        <h4>Anime Expo LA</h4>
-                        <span style="color:var(--text-sub); font-size:0.8rem;">Los Angeles CC</span>
-                    </div>
+                    <div><h4>Anime Expo LA</h4><span style="color:var(--text-sub); font-size:0.8rem;">Los Angeles CC</span></div>
                 </div>
                 <div class="event-item">
                     <div class="event-date">JUL<br>14</div>
-                    <div>
-                        <h4>Japan Expo Paris</h4>
-                        <span style="color:var(--text-sub); font-size:0.8rem;">Paris-Nord Villepinte</span>
-                    </div>
+                    <div><h4>Japan Expo Paris</h4><span style="color:var(--text-sub); font-size:0.8rem;">Paris-Nord Villepinte</span></div>
                 </div>
             </div>
         </section>
@@ -476,10 +423,9 @@
                 <div class="partner-logo"><i class="fab fa-spotify"></i><span>MUSIC LBR</span></div>
                 <div class="partner-logo"><i class="fab fa-twitch"></i><span>STREAM</span></div>
             </div>
-            
             <div class="collab-cta">
                 <p>Interested in collaboration?</p>
-                <a href="mailto:your-email@example.com" class="btn-neon">Contact Me</a>
+                <a href="#" class="btn-neon">Contact Me</a>
             </div>
         </section>
 
@@ -493,6 +439,47 @@
             <p style="color: #666; font-size: 0.8rem;">&copy; 2025 HARUKI ANIME JOURNAL. All Rights Reserved.</p>
         </footer>
     </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.hero-slide');
+        const totalSlides = slides.length;
+        let slideInterval;
+
+        // スライドを表示する関数
+        function showSlide(index) {
+            // 範囲外の処理（ループさせる）
+            if (index >= totalSlides) currentSlide = 0;
+            else if (index < 0) currentSlide = totalSlides - 1;
+            else currentSlide = index;
+
+            // すべてのスライドからactiveを外し、対象だけに付与
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[currentSlide].classList.add('active');
+        }
+
+        // 次/前へ移動する関数（ボタン用）
+        function moveSlide(direction) {
+            showSlide(currentSlide + direction);
+            resetTimer(); // 手動操作したらタイマーをリセット
+        }
+
+        // 自動再生タイマー
+        function startTimer() {
+            slideInterval = setInterval(() => {
+                moveSlide(1);
+            }, 5000); // 5秒ごとに切り替え
+        }
+
+        // タイマーリセット（手動操作時にバッティングしないように）
+        function resetTimer() {
+            clearInterval(slideInterval);
+            startTimer();
+        }
+
+        // 開始
+        startTimer();
+    </script>
 
 </body>
 </html>
