@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HARUKI ANIME JOURNAL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- ベース設定 --- */
+        :root {
+            --bg-color: #050810; /* 深いダークブルー */
+            --text-main: #ffffff;
+            --text-sub: #a0a0a0;
+            --accent-cyan: #00f0ff;
+            --accent-orange: #ff5e00;
+            --card-bg: #ffffff;
+            --font-en: 'Inter', sans-serif;
+            --font-jp: 'Noto Sans JP', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-en);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { list-style: none; }
+        img { width: 100%; display: block; }
+
+        /* --- コンテナ & サイドグロー効果 (画像の枠線を再現) --- */
+        .wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            box-shadow: -10px 0 50px -10px rgba(0, 240, 255, 0.2), 
+                        10px 0 50px -10px rgba(255, 94, 0, 0.2);
+        }
+
+        /* --- ヘッダー --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: rgba(255, 255, 255, 0.95);
+            position: absolute;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 900;
+            font-size: 1.5rem;
+            color: #000;
+            letter-spacing: 1px;
+        }
+        .logo span { color: var(--accent-orange); }
+
+        nav ul {
+            display: flex;
+            gap: 25px;
+        }
+
+        nav a {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #333;
+            text-transform: uppercase;
+        }
+        nav a:hover { color: var(--accent-orange); }
+
+        /* --- ヒーローセクション --- */
+        .hero {
+            height: 85vh;
+            background: linear-gradient(to bottom, rgba(5,8,16,0.3), var(--bg-color)), 
+                        url('https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=2574&auto=format&fit=crop'); /* サイバーパンクな街並みのダミー画像 */
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 5%;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 600px;
+            margin-top: 80px;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            text-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+        }
+
+        .hero p {
+            color: #ccc;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+        /* --- 共通セクションスタイル --- */
+        section {
+            padding: 60px 5%;
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        /* --- Staff Picks (カード) --- */
+        .staff-picks {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            color: #333;
+            border-radius: 4px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+        
+        /* カードのホバーエフェクト（光る） */
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+        }
+        
+        /* 画像部分に内側の光沢枠線 */
+        .card-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .card:hover .card-image img { transform: scale(1.05); }
+
+        .card-content {
+            padding: 20px;
+        }
+        .card-content h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        .card-content p {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        /* --- Global Events (横並びリスト) --- */
+        .events-list {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding-bottom: 20px;
+        }
+
+        .event-item {
+            background: #0f141e;
+            min-width: 300px;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .event-item:hover {
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 15px rgba(255, 94, 0, 0.3);
+        }
+
+        .event-logo {
+            width: 50px;
+            height: 50px;
+            background: #fff;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #000;
+            font-size: 0.8rem;
+        }
+
+        .event-info h4 { font-size: 1rem; margin-bottom: 4px; }
+        .event-info span { font-size: 0.85rem; color: var(--text-sub); }
+
+        /* --- Community (フォーム) --- */
+        .community {
+            background: linear-gradient(to bottom, rgba(5,8,16,0.8), rgba(5,8,16,0.9)),
+                        url('https://images.unsplash.com/photo-1554768804-50c1e2b50a6e?q=80&w=2670&auto=format&fit=crop'); /* カフェのダミー画像 */
+            background-size: cover;
+            background-position: center;
+            text-align: center;
+            padding: 100px 20px;
+            border-top: 1px solid #333;
+        }
+
+        .community h2 { margin-bottom: 10px; font-size: 2rem; }
+        .community p { margin-bottom: 30px; color: var(--text-sub); }
+
+        .subscribe-form {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            max-width: 500px;
+            margin: 0 auto 40px;
+        }
+
+        .subscribe-form input {
+            flex: 1;
+            padding: 12px 20px;
+            border-radius: 4px;
+            border: none;
+            outline: none;
+        }
+
+        .subscribe-form button {
+            padding: 12px 30px;
+            background: #4e6e75; /* 画像に近い落ち着いた青緑 */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .subscribe-form button:hover { background: var(--accent-cyan); color: #000; }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            font-size: 1.5rem;
+        }
+
+        /* --- フッター --- */
+        footer {
+            border-top: 1px solid #222;
+            padding: 30px 5%;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        .footer-links { display: flex; gap: 20px; }
+
+        /* --- モバイル対応 --- */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            header { padding: 15px; flex-direction: column; gap: 15px; position: relative; }
+            nav ul { flex-wrap: wrap; justify-content: center; }
+            .events-list { flex-direction: column; }
+            .subscribe-form { flex-direction: column; }
+            footer { flex-direction: column; gap: 20px; text-align: center; }
+            .footer-links { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <header>
+            <div class="logo">
+                HARUKI <span>|</span> ANIME JOURNAL
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#">ABOUT</a></li>
+                    <li><a href="#">NEWS</a></li>
+                    <li><a href="#">REVIEWS</a></li>
+                    <li><a href="#">FEATURES</a></li>
+                    <li><a href="#">SHOP</a></li>
+                    <li><a href="#">COMMUNITY</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Curating Anime Culture<br>& Global Style.</h1>
+                <p>Your daily dose of anime elegance and modern living.</p>
+            </div>
+        </section>
+
+        <section id="staff-picks">
+            <h2 class="section-title">Staff Picks</h2>
+            <div class="staff-picks">
+                <article class="card">
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1613376023733-0a73315d9b06?q=80&w=800&auto=format&fit=crop" alt="Fantasy Anime">
+                    </div>
+                    <div class="card-content">
+                        <h3>Underrated Gems</h3>
+                        <p>Fantasy anime still: in fantasy nuolaola mooots...</p>
+                    </div>
+                </article>
+                <article class="card">
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1560972550-e95f27bd00b3?q=80&w=800&auto=format&fit=crop" alt="Manga">
+                    </div>
+                    <div class="card-content">
+                        <h3>New Manga Releases</h3>
+                        <p>New manga releases and manga panels, and more...</p>
+                    </div>
+                </article>
+                <article class="card">
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1618336753974-aae8e04506aa?q=80&w=800&auto=format&fit=crop" alt="Indie Animation">
+                    </div>
+                    <div class="card-content">
+                        <h3>Indie Animations</h3>
+                        <p>Create a animation and indie animations misineers...</p>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section id="events">
+            <h2 class="section-title">Global Events Calendar</h2>
+            <div class="events-list">
+                <div class="event-item">
+                    <div class="event-logo">FAIR</div>
+                    <div class="event-info">
+                        <h4>Tokyo Anime Fair</h4>
+                        <span>(Mar 25-27)</span>
+                    </div>
+                </div>
+                <div class="event-item" style="border-color: var(--accent-orange);">
+                    <div class="event-logo" style="background: var(--accent-orange); color: white;">AX</div>
+                    <div class="event-info">
+                        <h4>Anime Expo LA</h4>
+                        <span>(Jul 1-4)</span>
+                    </div>
+                </div>
+                <div class="event-item">
+                    <div class="event-logo">JEP</div>
+                    <div class="event-info">
+                        <h4>Japan Expo Paris</h4>
+                        <span>(Jul 14-17)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="community">
+            <h2>COMMUNITY</h2>
+            <p>Sign up for global anime news & events</p>
+            <form class="subscribe-form">
+                <input type="email" placeholder="Enter your email">
+                <button type="submit">Sign up</button>
+            </form>
+            <div class="social-icons">
+                <span>🐦</span> <span>📸</span> <span>💬</span>
+            </div>
+        </section>
+
+        <footer>
+            <div>&copy; copyright info. Anime reserved.</div>
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Content</a>
+                <a href="#">Links</a>
+                <a href="#">Contact</a>
+            </div>
+        </footer>
+    </div>
+
+</body>
+</html>
