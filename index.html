@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HARUKI ANIME JOURNAL | Cyberpunk Media</title>
+    <title>HARUKI ANIME JOURNAL | Japan's Sole Anime Influencer</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* --- 1. ベース設定 --- */
+        /* --- 1. Base Settings --- */
         :root {
             --bg-deep: #050810;
             --bg-card: #0f141e;
@@ -17,8 +17,7 @@
             --text-sub: #a0a0a0;
             --accent-cyan: #00f0ff;
             --accent-orange: #ff5e00;
-            --accent-pink: #ff0055; 
-            --accent-green: #00ff9d;
+            --accent-purple: #9d00ff;
             --font-en: 'Inter', sans-serif;
             --font-jp: 'Noto Sans JP', sans-serif;
         }
@@ -44,17 +43,17 @@
             margin: 0 auto;
             position: relative;
             background: var(--bg-deep);
-            box-shadow: -5px 0 50px rgba(0, 240, 255, 0.15), 5px 0 50px rgba(255, 94, 0, 0.15);
+            box-shadow: -5px 0 50px rgba(0, 240, 255, 0.1), 5px 0 50px rgba(255, 94, 0, 0.1);
             min-height: 100vh;
         }
 
-        /* --- 2. ヘッダー --- */
+        /* --- 2. Header --- */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 20px 40px;
-            background: rgba(5, 8, 16, 0.9);
+            background: rgba(5, 8, 16, 0.95);
             backdrop-filter: blur(10px);
             position: sticky;
             top: 0;
@@ -64,188 +63,300 @@
 
         .logo {
             font-weight: 900;
-            font-size: 1.5rem;
-            letter-spacing: 1px;
+            font-size: 1.4rem;
             color: #fff;
             display: flex;
             align-items: center;
             gap: 8px;
         }
-        .logo i { color: var(--accent-cyan); }
         .logo span { color: var(--accent-orange); }
 
-        nav ul { display: flex; gap: 25px; }
+        nav ul { display: flex; gap: 30px; }
         nav a {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 700;
             color: var(--text-sub);
             text-transform: uppercase;
         }
-        nav a:hover { color: var(--accent-cyan); text-shadow: 0 0 8px var(--accent-cyan); }
-
-        /* --- 3. ヒーローセクション (カルーセル改修版) --- */
-        .hero {
-            height: 80vh;
-            position: relative;
-            overflow: hidden; /* はみ出し防止 */
+        nav a:hover, nav a.active { color: var(--accent-cyan); }
+        
+        /* Contact Button in Nav */
+        .nav-cta {
+            background: var(--accent-cyan);
+            color: #000 !important;
+            padding: 8px 20px;
+            border-radius: 4px;
+        }
+        .nav-cta:hover {
+            background: #fff;
+            box-shadow: 0 0 15px var(--accent-cyan);
         }
 
-        /* 各スライドの共通スタイル */
-        .hero-slide {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            opacity: 0; /* デフォルトは非表示 */
-            transition: opacity 1s ease-in-out; /* フェードアニメーション */
+        /* --- 3. Hero Section --- */
+        .hero {
+            height: 70vh;
+            position: relative;
+            background: linear-gradient(to right, rgba(5,8,16,0.9), rgba(5,8,16,0.4)),
+                        url('https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=2574&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
             display: flex;
             align-items: center;
             padding: 0 5%;
-            z-index: 1;
+        }
+
+        .hero-content { max-width: 700px; }
+        .hero-tag {
+            display: inline-block;
+            background: var(--accent-orange);
+            color: #fff;
+            font-weight: bold;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        .hero h1 {
+            font-size: 3.5rem;
+            line-height: 1.1;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+        .hero h1 span { color: var(--accent-cyan); }
+        .hero p {
+            font-size: 1.1rem;
+            color: #ccc;
+            margin-bottom: 30px;
+            font-family: var(--font-jp);
         }
         
-        /* 背景を暗くするオーバーレイ */
-        .hero-slide::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, rgba(5,8,16,0.3), var(--bg-deep));
-            z-index: 1;
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            gap: 40px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 30px;
         }
+        .stat-item h4 { font-size: 1.8rem; font-weight: 900; color: #fff; }
+        .stat-item p { font-size: 0.8rem; color: var(--text-sub); text-transform: uppercase; }
 
-        /* アクティブなスライドだけ表示 */
-        .hero-slide.active { opacity: 1; z-index: 2; }
-
-        .hero-content {
-            position: relative; z-index: 3; margin-top: 50px;
-            transform: translateY(30px); opacity: 0; transition: 1s ease;
-        }
-
-        /* スライドが表示されたときに文字も浮き上がる */
-        .hero-slide.active .hero-content {
-            transform: translateY(0); opacity: 1; transition-delay: 0.3s;
-        }
-
-        .hero-content h1 {
-            font-size: 4rem; line-height: 1; text-transform: uppercase;
-            margin-bottom: 20px; text-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
-        }
-        .hero-content p { color: var(--text-sub); font-size: 1.2rem; max-width: 500px; }
-
-        /* カルーセル操作ボタン */
-        .carousel-btn {
-            position: absolute; top: 50%; transform: translateY(-50%);
-            background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2);
-            color: #fff; font-size: 2rem; width: 50px; height: 50px;
-            border-radius: 50%; cursor: pointer; z-index: 10;
-            display: flex; align-items: center; justify-content: center;
-            transition: 0.3s;
-        }
-        .carousel-btn:hover { background: var(--accent-cyan); color: #000; border-color: var(--accent-cyan); }
-        .prev-btn { left: 20px; }
-        .next-btn { right: 20px; }
-
-        /* --- 共通: セクション見出し --- */
+        /* --- Common: Section Title --- */
         section { padding: 80px 5%; border-bottom: 1px solid rgba(255,255,255,0.05); }
         
         .section-title {
-            text-align: center; font-size: 2rem; font-weight: 900;
-            margin-bottom: 50px; text-transform: uppercase; letter-spacing: 2px;
-            display: flex; align-items: center; justify-content: center; gap: 15px;
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        .section-title::before, .section-title::after {
-            content: ''; display: block; width: 50px; height: 4px;
-            background: var(--accent-cyan); box-shadow: 0 0 10px var(--accent-cyan);
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-sub);
+            font-family: var(--font-jp);
+            margin-bottom: 50px;
+            font-size: 0.9rem;
         }
-        .section-title::after { background: var(--accent-orange); box-shadow: 0 0 10px var(--accent-orange); }
 
-        /* --- 4. Staff Picks --- */
-        .staff-picks { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
-        .card {
-            background: var(--bg-card); border: 1px solid #333; border-radius: 8px;
-            overflow: hidden; transition: 0.3s;
+        /* --- 4. GUIDEBOOK (B2C) --- */
+        #guidebook {
+            background: linear-gradient(45deg, #0f141e, #1a1f2e);
+            position: relative;
+            overflow: hidden;
         }
-        .card:hover { transform: translateY(-5px); border-color: var(--accent-cyan); box-shadow: 0 0 15px rgba(0, 240, 255, 0.2); }
-        .card-image { height: 220px; overflow: hidden; }
-        .card-image img { transition: 0.5s; }
-        .card:hover .card-image img { transform: scale(1.1); }
-        .card-content { padding: 20px; }
-        .card-content h3 { font-size: 1.2rem; margin-bottom: 8px; color: #fff; }
-        .card-content p { font-size: 0.9rem; color: var(--text-sub); }
-
-        /* --- 5. TIER LIST --- */
-        .tier-container { display: flex; flex-direction: column; gap: 15px; }
-        .tier-row { display: flex; background: #111; border-radius: 4px; overflow: hidden; }
-        .tier-label {
-            width: 100px; display: flex; align-items: center; justify-content: center;
-            font-size: 2rem; font-weight: 900; color: #000; flex-shrink: 0;
+        /* Background decoration */
+        #guidebook::before {
+            content: 'TOKYO';
+            position: absolute;
+            top: -20px; right: -20px;
+            font-size: 10rem;
+            font-weight: 900;
+            color: rgba(255,255,255,0.03);
+            z-index: 0;
         }
-        .tier-s { background: var(--accent-pink); box-shadow: 0 0 15px var(--accent-pink); }
-        .tier-a { background: var(--accent-orange); }
-        .tier-b { background: var(--accent-cyan); }
-        .tier-items { display: flex; flex-wrap: wrap; padding: 10px; gap: 10px; flex-grow: 1; }
-        .tier-img {
-            width: 80px; height: 80px; border-radius: 4px; overflow: hidden;
-            border: 2px solid transparent; cursor: pointer; transition: 0.2s;
+
+        .guide-container {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            position: relative;
+            z-index: 1;
         }
-        .tier-img:hover { border-color: #fff; transform: scale(1.1); }
-
-        /* --- 6. STREAM --- */
-        .stream-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; justify-content: center; }
-        .stream-card {
-            background: #000; border-radius: 16px; padding: 12px; border: 1px solid #333; transition: 0.3s; position: relative;
+        .guide-image {
+            flex: 1;
+            position: relative;
         }
-        .stream-card:hover { transform: translateY(-10px); }
-        .tiktok-glow:hover { border-color: #00f0ff; box-shadow: 0 0 20px rgba(0, 240, 255, 0.4); }
-        .insta-glow:hover { border-color: #e1306c; box-shadow: 0 0 20px rgba(225, 48, 108, 0.4); }
-        .youtube-glow:hover { border-color: #ff0000; box-shadow: 0 0 20px rgba(255, 0, 0, 0.4); }
-        .stream-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-weight: bold; font-size: 0.9rem; }
-        .embed-dummy { aspect-ratio: 9 / 16; background: #222; border-radius: 12px; overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center; }
-        .play-icon { font-size: 3rem; color: rgba(255,255,255,0.7); }
-
-        /* --- 7. LOOKBOOK --- */
-        .lookbook-slider { display: flex; gap: 20px; overflow-x: auto; padding: 20px 0; scrollbar-width: thin; scrollbar-color: var(--accent-cyan) #222; }
-        .look-item { min-width: 250px; height: 400px; position: relative; border-radius: 4px; overflow: hidden; cursor: pointer; }
-        .look-item::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 50%; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); }
-        .look-info { position: absolute; bottom: 20px; left: 15px; z-index: 2; }
-        .brand-tag { background: var(--accent-cyan); color: #000; padding: 4px 10px; font-size: 0.7rem; font-weight: 900; text-transform: uppercase; display: inline-block; margin-bottom: 5px; }
-
-        /* --- 8. EVENTS --- */
-        .events-scroller { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 20px; scrollbar-width: thin; scrollbar-color: var(--accent-orange) #222; }
-        .event-item { min-width: 300px; background: var(--bg-card); border: 1px solid #333; padding: 20px; border-radius: 8px; display: flex; align-items: center; gap: 15px; }
-        .event-date { background: #fff; color: #000; padding: 10px; font-weight: bold; border-radius: 4px; text-align: center; line-height: 1.2; }
-
-        /* --- 9. PARTNERS --- */
-        #partners { background: linear-gradient(to top, #020305, var(--bg-deep)); text-align: center; padding-bottom: 80px; border-bottom: none; }
-        .partner-grid { display: flex; justify-content: center; flex-wrap: wrap; gap: 40px 60px; margin-bottom: 60px; opacity: 0.7; }
-        .partner-logo { display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 3rem; color: #555; cursor: pointer; transition: 0.4s ease; }
-        .partner-logo span { font-size: 0.8rem; font-weight: 700; letter-spacing: 2px; opacity: 0; transform: translateY(10px); transition: 0.4s ease; }
-        .partner-logo:hover { color: #fff; transform: scale(1.1); text-shadow: 0 0 15px var(--accent-cyan); filter: drop-shadow(0 0 10px var(--accent-cyan)); }
-        .partner-logo:hover span { opacity: 1; transform: translateY(0); color: var(--accent-cyan); }
-        .partner-logo:nth-child(1):hover { color: #003791; text-shadow: 0 0 15px #003791; }
-        .partner-logo:nth-child(2):hover { color: #171a21; text-shadow: 0 0 15px #fff; }
-        .partner-logo:nth-child(3):hover { color: #5865F2; text-shadow: 0 0 15px #5865F2; }
-        .partner-logo:nth-child(4):hover { color: #1DB954; text-shadow: 0 0 15px #1DB954; }
-        .partner-logo:nth-child(5):hover { color: #9146FF; text-shadow: 0 0 15px #9146FF; }
-        .collab-cta p { color: var(--text-sub); margin-bottom: 20px; font-size: 0.9rem; }
-        .btn-neon { display: inline-block; padding: 15px 40px; border: 2px solid var(--accent-cyan); color: var(--accent-cyan); font-weight: 900; text-transform: uppercase; letter-spacing: 2px; border-radius: 4px; position: relative; overflow: hidden; z-index: 1; }
-        .btn-neon::before { content: ''; position: absolute; top: 0; left: 0; width: 0%; height: 100%; background: var(--accent-cyan); z-index: -1; transition: 0.4s ease; }
-        .btn-neon:hover { color: #000; box-shadow: 0 0 20px var(--accent-cyan); }
-        .btn-neon:hover::before { width: 100%; }
-
-        /* --- 10. Footer --- */
-        footer { padding: 50px 5%; background: #020305; text-align: center; border-top: 1px solid #222; }
-        .social-links { font-size: 1.5rem; margin-bottom: 20px; display: flex; justify-content: center; gap: 20px; }
-        .social-links i:hover { color: var(--accent-orange); transform: scale(1.2); transition: 0.3s; }
+        .guide-image img {
+            border-radius: 10px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            border: 1px solid #333;
+            transform: rotate(-2deg);
+            transition: 0.3s;
+        }
+        .guide-image:hover img { transform: rotate(0) scale(1.02); }
         
-        /* スマホ対応 */
+        .guide-content { flex: 1; }
+        .guide-content h2 {
+            font-size: 2.5rem;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+        .guide-content h2 span { color: var(--accent-cyan); }
+        
+        .feature-list { margin: 30px 0; }
+        .feature-item {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .feature-icon {
+            width: 40px; height: 40px;
+            background: rgba(0, 240, 255, 0.1);
+            color: var(--accent-cyan);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        .feature-text h4 { font-size: 1.1rem; margin-bottom: 5px; }
+        .feature-text p { font-size: 0.9rem; color: var(--text-sub); font-family: var(--font-jp); }
+
+        .btn-buy {
+            display: inline-block;
+            padding: 15px 50px;
+            background: var(--accent-orange);
+            color: #fff;
+            font-weight: 900;
+            font-size: 1.1rem;
+            border-radius: 5px;
+            box-shadow: 0 10px 30px rgba(255, 94, 0, 0.3);
+        }
+        .btn-buy:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(255, 94, 0, 0.5); }
+
+        /* --- 5. BUSINESS PLANS (B2B) --- */
+        .plan-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .plan-card {
+            background: var(--bg-card);
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            transition: 0.3s;
+        }
+        .plan-card:hover { border-color: var(--accent-cyan); transform: translateY(-10px); }
+        
+        .plan-card.recommended {
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 20px rgba(255, 94, 0, 0.1);
+        }
+        .badge {
+            position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
+            background: var(--accent-orange); color: #fff;
+            padding: 5px 15px; font-size: 0.8rem; font-weight: bold; border-radius: 20px;
+        }
+
+        .plan-name { font-size: 1.5rem; font-weight: 900; margin-bottom: 10px; }
+        .plan-price { font-size: 2rem; font-weight: bold; color: #fff; margin-bottom: 30px; }
+        .plan-price span { font-size: 1rem; color: var(--text-sub); font-weight: normal; }
+
+        .plan-features { text-align: left; margin-bottom: 30px; list-style: none; }
+        .plan-features li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-family: var(--font-jp);
+            font-size: 0.9rem;
+            display: flex; gap: 10px;
+        }
+        .plan-features li i { color: var(--accent-cyan); }
+
+        .btn-plan {
+            display: block; width: 100%; padding: 12px;
+            border: 1px solid #555; color: #fff;
+            border-radius: 4px; font-weight: bold;
+        }
+        .plan-card:hover .btn-plan { background: #fff; color: #000; border-color: #fff; }
+        .plan-card.recommended .btn-plan { background: var(--accent-orange); border-color: var(--accent-orange); }
+
+        /* --- 6. VIRAL CONTENT (実績) --- */
+        .viral-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        .viral-card {
+            background: #000;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #333;
+            position: relative;
+        }
+        .viral-thumb {
+            aspect-ratio: 9/16;
+            position: relative;
+        }
+        .viral-overlay {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            padding: 20px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+        }
+        .view-count {
+            font-size: 1.8rem; font-weight: 900; color: var(--accent-cyan);
+            display: block; text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        }
+        .platform-tag {
+            display: inline-flex; align-items: center; gap: 5px;
+            background: rgba(255,255,255,0.2); padding: 3px 8px;
+            border-radius: 4px; font-size: 0.8rem; margin-bottom: 5px;
+        }
+
+        /* --- 7. PARTNERS --- */
+        .partner-logos {
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 50px;
+            opacity: 0.7; margin-top: 30px;
+        }
+        .partner-item {
+            font-size: 1.2rem; font-weight: bold; color: #666;
+            border: 1px solid #333; padding: 15px 30px; border-radius: 8px;
+            transition: 0.3s; cursor: default;
+        }
+        .partner-item:hover { color: #fff; border-color: var(--accent-cyan); box-shadow: 0 0 15px rgba(0,240,255,0.2); }
+
+        /* --- 8. Footer --- */
+        footer {
+            background: #020305;
+            padding: 60px 5%;
+            border-top: 1px solid #222;
+            text-align: center;
+        }
+        .footer-contact { margin-bottom: 40px; }
+        .footer-contact h3 { font-size: 1.5rem; margin-bottom: 10px; }
+        .footer-contact a { color: var(--accent-cyan); font-size: 1.2rem; font-weight: bold; }
+        
+        .social-links {
+            display: flex; justify-content: center; gap: 20px; margin-bottom: 30px;
+        }
+        .social-links a {
+            width: 50px; height: 50px; border-radius: 50%;
+            background: #111; display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; transition: 0.3s;
+        }
+        .social-links a:hover { background: var(--accent-cyan); color: #000; }
+
+        /* Responsive */
         @media (max-width: 768px) {
-            .hero-content h1 { font-size: 2.5rem; }
+            .hero h1 { font-size: 2.2rem; }
+            .guide-container { flex-direction: column; }
             header { padding: 15px; }
             nav ul { display: none; }
-            .tier-label { width: 60px; font-size: 1.5rem; }
-            .tier-img { width: 60px; height: 60px; }
-            .btn-neon { padding: 12px 30px; font-size: 0.9rem; }
-            .carousel-btn { width: 40px; height: 40px; font-size: 1.5rem; }
+            .stats-bar { flex-wrap: wrap; gap: 20px; }
         }
     </style>
 </head>
@@ -253,233 +364,191 @@
 
     <div class="wrapper">
         <header>
-            <div class="logo"><i class="fas fa-bolt"></i> HARUKI <span>|</span> MEDIA</div>
+            <div class="logo">
+                HARUKI <span>|</span> ANIME JOURNAL
+            </div>
             <nav>
                 <ul>
-                    <li><a href="#picks">PICKS</a></li>
-                    <li><a href="#tier">TIER LIST</a></li>
-                    <li><a href="#stream">STREAM</a></li>
-                    <li><a href="#outfit">LOOKBOOK</a></li>
-                    <li><a href="#events">EVENTS</a></li>
-                    <li><a href="#partners">PARTNERS</a></li>
+                    <li><a href="#guidebook">Guidebook</a></li>
+                    <li><a href="#viral">Viral</a></li>
+                    <li><a href="#business">Business</a></li>
+                    <li><a href="#partners">Partners</a></li>
+                    <li><a href="mailto:haruki@animejournal.jp" class="nav-cta">Contact</a></li>
                 </ul>
             </nav>
         </header>
 
-        <section class="hero" id="home">
+        <section class="hero">
+            <div class="hero-content">
+                <span class="hero-tag">Japan's Sole Anime Influencer</span>
+                <h1>Connecting<br><span>Anime Fans</span><br>Worldwide</h1>
+                <p>日本のアニメと世界を繋ぐ架け橋となり、アニメ産業の発展に貢献します。<br>
+                日本から英語圏(US, Indonesia)をターゲットにリアルなトレンドを発信中。</p>
+                
+                <div class="stats-bar">
+                    <div class="stat-item">
+                        <h4>200K+</h4>
+                        <p>Total Followers</p>
+                    </div>
+                    <div class="stat-item">
+                        <h4>10M+</h4>
+                        <p>Video Views</p>
+                    </div>
+                    <div class="stat-item">
+                        <h4>No.1</h4>
+                        <p>In Japan</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="guidebook">
+            <div class="guide-container">
+                <div class="guide-image">
+                    <img src="https://images.unsplash.com/photo-1555680202-c86f0e12f086?q=80&w=1000&auto=format&fit=crop" alt="The Ultimate Tokyo Anime Guide">
+                </div>
+                <div class="guide-content">
+                    <span style="color:var(--accent-orange); font-weight:bold; letter-spacing:2px;">DIGITAL PRODUCT</span>
+                    <h2>The Ultimate<br><span>Tokyo Anime Guide</span></h2>
+                    <p style="color:#ccc; margin-bottom:20px; font-family:var(--font-jp);">
+                        訪日観光客向けに制作された、300人以上のオタクが選んだ「真のアニメ聖地」ガイドブック。
+                        Google Mapsと完全連携し、タップするだけで目的地へナビゲートします。
+                    </p>
+                    
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <div class="feature-icon"><i class="fas fa-map-marked-alt"></i></div>
+                            <div class="feature-text">
+                                <h4>Google Maps Integration</h4>
+                                <p>紙の地図は不要。専用のGoogleマップリストですべての店舗をピン留め。</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon"><i class="fas fa-user-check"></i></div>
+                            <div class="feature-text">
+                                <h4>Curated by Locals</h4>
+                                <p>秋葉原・中野・池袋など、現地のオタクしか知らない隠れた名店を網羅。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="#" class="btn-buy">Get the Guide</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="viral">
+            <h2 class="section-title">Viral Content</h2>
+            <p class="section-subtitle">1,000万回再生を超えたショート動画の実績</p>
             
-            <div class="hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=2574&auto=format&fit=crop');">
-                <div class="hero-content">
-                    <h1>Anime Culture<br>& Cyber Style.</h1>
-                    <p>Curating the best of modern anime lifestyle, fashion, and tech.</p>
-                </div>
-            </div>
-
-            <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1555680202-c86f0e12f086?q=80&w=2670&auto=format&fit=crop');">
-                <div class="hero-content">
-                    <h1>Tokyo Night<br>Vibes</h1>
-                    <p>Experience the neon-lit streets and underground anime scenes.</p>
-                </div>
-            </div>
-
-            <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=2568&auto=format&fit=crop');">
-                <div class="hero-content">
-                    <h1>Next Gen<br>Creators</h1>
-                    <p>Highlighting the artists shaping the future of digital entertainment.</p>
-                </div>
-            </div>
-
-            <button class="carousel-btn prev-btn" onclick="moveSlide(-1)">&#10094;</button>
-            <button class="carousel-btn next-btn" onclick="moveSlide(1)">&#10095;</button>
-        </section>
-
-        <section id="picks">
-            <h2 class="section-title">Staff Picks</h2>
-            <div class="staff-picks">
-                <article class="card">
-                    <div class="card-image"><img src="https://images.unsplash.com/photo-1621570163351-4f164629471f?q=80&w=800&auto=format&fit=crop" alt="Article 1"></div>
-                    <div class="card-content">
-                        <h3>Hidden Fantasy Gems</h3>
-                        <p>Exploring underrated fantasy worlds this season.</p>
-                    </div>
-                </article>
-                <article class="card">
-                    <div class="card-image"><img src="https://images.unsplash.com/photo-1618336753974-aae8e04506aa?q=80&w=800&auto=format&fit=crop" alt="Article 2"></div>
-                    <div class="card-content">
-                        <h3>Indie Animation Rise</h3>
-                        <p>Why independent creators are taking over the scene.</p>
-                    </div>
-                </article>
-                <article class="card">
-                    <div class="card-image"><img src="https://images.unsplash.com/photo-1560972550-e95f27bd00b3?q=80&w=800&auto=format&fit=crop" alt="Article 3"></div>
-                    <div class="card-content">
-                        <h3>Manga Panel Art</h3>
-                        <p>The evolution of digital manga composition.</p>
-                    </div>
-                </article>
-            </div>
-        </section>
-
-        <section id="tier">
-            <h2 class="section-title">SEASONAL TIER LIST</h2>
-            <div class="tier-container">
-                <div class="tier-row">
-                    <div class="tier-label tier-s">S</div>
-                    <div class="tier-items">
-                        <div class="tier-img"><img src="https://images.unsplash.com/photo-1541562232579-512a21360020?q=80&w=200&auto=format&fit=crop" alt="Anime"></div>
-                        <div class="tier-img"><img src="https://images.unsplash.com/photo-1620553632296-6e44b93b584f?q=80&w=200&auto=format&fit=crop" alt="Anime"></div>
-                        <div class="tier-img"><img src="https://images.unsplash.com/photo-1534346589587-a0e18820bdac?q=80&w=200&auto=format&fit=crop" alt="Anime"></div>
+            <div class="viral-grid">
+                <div class="viral-card">
+                    <div class="viral-thumb">
+                        <img src="https://images.unsplash.com/photo-1611162616475-46b635cb6868?q=80&w=600&auto=format&fit=crop" alt="Viral Video 1">
+                        <div class="viral-overlay">
+                            <div class="platform-tag"><i class="fab fa-youtube"></i> Shorts</div>
+                            <span class="view-count">10.7M Views</span>
+                            <p style="font-size:0.9rem;">Which anime is this scene...</p>
+                        </div>
                     </div>
                 </div>
-                <div class="tier-row">
-                    <div class="tier-label tier-a">A</div>
-                    <div class="tier-items">
-                        <div class="tier-img"><img src="https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=200&auto=format&fit=crop" alt="Anime"></div>
-                        <div class="tier-img"><img src="https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=200&auto=format&fit=crop" alt="Anime"></div>
+                <div class="viral-card">
+                    <div class="viral-thumb">
+                        <img src="https://images.unsplash.com/photo-1611262588024-d12430b98920?q=80&w=600&auto=format&fit=crop" alt="Viral Video 2">
+                        <div class="viral-overlay">
+                            <div class="platform-tag"><i class="fab fa-instagram"></i> Reels</div>
+                            <span class="view-count">1.2M Views</span>
+                            <p style="font-size:0.9rem;">Tourist Trap in Japan</p>
+                        </div>
                     </div>
                 </div>
-                <div class="tier-row">
-                    <div class="tier-label tier-b">B</div>
-                    <div class="tier-items">
-                        <div class="tier-img"><img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=200&auto=format&fit=crop" alt="Anime"></div>
+                <div class="viral-card">
+                    <div class="viral-thumb">
+                        <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=600&auto=format&fit=crop" alt="Viral Video 3">
+                        <div class="viral-overlay">
+                            <div class="platform-tag"><i class="fab fa-tiktok"></i> TikTok</div>
+                            <span class="view-count">100K+ Plays</span>
+                            <p style="font-size:0.9rem;">Akihabara Hidden Gems</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="stream">
-            <h2 class="section-title">LATEST STREAM</h2>
-            <div class="stream-grid">
-                <div class="stream-card tiktok-glow">
-                    <div class="stream-header"><i class="fab fa-tiktok"></i> TikTok</div>
-                    <div class="embed-dummy">
-                        <img src="https://images.unsplash.com/photo-1611162616475-46b635cb6868?q=80&w=600&auto=format&fit=crop" alt="Video">
-                        <div class="play-icon">▶</div>
-                    </div>
+        <section id="business">
+            <h2 class="section-title">Marketing Solutions</h2>
+            <p class="section-subtitle">海外アニメファン特化型マーケティング支援プラン</p>
+            
+            <div class="plan-grid">
+                <div class="plan-card">
+                    <div class="plan-name">UME <span style="font-size:1rem; font-weight:normal;">(梅)</span></div>
+                    <div class="plan-price">40万<span>円/月</span></div>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> 企画リスト作成</li>
+                        <li><i class="fas fa-check"></i> 動画制作 (月1~2本)</li>
+                        <li><i class="fas fa-check"></i> 月次レポート</li>
+                        <li><i class="fas fa-check"></i> 海外ファンアンケート</li>
+                    </ul>
+                    <a href="mailto:haruki@animejournal.jp" class="btn-plan">Select Plan</a>
                 </div>
-                <div class="stream-card insta-glow">
-                    <div class="stream-header"><i class="fab fa-instagram"></i> Instagram</div>
-                    <div class="embed-dummy">
-                        <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=600&auto=format&fit=crop" alt="Video">
-                        <div class="play-icon">▶</div>
-                    </div>
+
+                <div class="plan-card recommended">
+                    <div class="badge">POPULAR</div>
+                    <div class="plan-name">TAKE <span style="font-size:1rem; font-weight:normal;">(竹)</span></div>
+                    <div class="plan-price" style="color:var(--accent-orange);">60万<span>円/月</span></div>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> 企画リスト作成</li>
+                        <li><i class="fas fa-check"></i> 動画制作 (月3~4本)</li>
+                        <li><i class="fas fa-check"></i> 海外イベントアンケート</li>
+                        <li><i class="fas fa-check"></i> 改善サイクル (PDCA)</li>
+                    </ul>
+                    <a href="mailto:haruki@animejournal.jp" class="btn-plan">Select Plan</a>
                 </div>
-                <div class="stream-card youtube-glow">
-                    <div class="stream-header"><i class="fab fa-youtube"></i> Shorts</div>
-                    <div class="embed-dummy">
-                        <img src="https://images.unsplash.com/photo-1492619877717-d460d3d43b23?q=80&w=600&auto=format&fit=crop" alt="Video">
-                        <div class="play-icon">▶</div>
-                    </div>
+
+                <div class="plan-card">
+                    <div class="plan-name">MATSU <span style="font-size:1rem; font-weight:normal;">(松)</span></div>
+                    <div class="plan-price">90万<span>円/月</span></div>
+                    <ul class="plan-features">
+                        <li><i class="fas fa-check"></i> 全ての竹プラン内容</li>
+                        <li><i class="fas fa-check"></i> 国別インフルエンサー選定</li>
+                        <li><i class="fas fa-check"></i> 海外キャスティング交渉</li>
+                        <li><i class="fas fa-check"></i> 各国向け企画アドバイス</li>
+                    </ul>
+                    <a href="mailto:haruki@animejournal.jp" class="btn-plan">Select Plan</a>
                 </div>
             </div>
         </section>
 
-        <section id="outfit">
-            <h2 class="section-title">OUTFIT LOOKBOOK</h2>
-            <div class="lookbook-slider">
-                <div class="look-item">
-                    <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=600&auto=format&fit=crop" alt="Fashion">
-                    <div class="look-info"><span class="brand-tag">HYPER STORE</span><h4>Neon Jacket V2</h4></div>
-                </div>
-                <div class="look-item">
-                    <img src="https://images.unsplash.com/photo-1529139574466-a302d27460a0?q=80&w=600&auto=format&fit=crop" alt="Fashion">
-                    <div class="look-info"><span class="brand-tag">TOKYO BASE</span><h4>Graphic Tee</h4></div>
-                </div>
-                <div class="look-item">
-                    <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=600&auto=format&fit=crop" alt="Fashion">
-                    <div class="look-info"><span class="brand-tag">UNIQLO</span><h4>UT Collection</h4></div>
-                </div>
-                <div class="look-item">
-                    <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=600&auto=format&fit=crop" alt="Fashion">
-                    <div class="look-info"><span class="brand-tag">NIKE</span><h4>Cyber Kicks</h4></div>
-                </div>
-            </div>
-        </section>
-
-        <section id="events">
-            <h2 class="section-title">Global Events</h2>
-            <div class="events-scroller">
-                <div class="event-item">
-                    <div class="event-date">MAR<br>25</div>
-                    <div><h4>Tokyo Anime Fair</h4><span style="color:var(--text-sub); font-size:0.8rem;">Tokyo Big Sight</span></div>
-                </div>
-                <div class="event-item" style="border-color: var(--accent-orange);">
-                    <div class="event-date" style="background: var(--accent-orange); color:#fff;">JUL<br>01</div>
-                    <div><h4>Anime Expo LA</h4><span style="color:var(--text-sub); font-size:0.8rem;">Los Angeles CC</span></div>
-                </div>
-                <div class="event-item">
-                    <div class="event-date">JUL<br>14</div>
-                    <div><h4>Japan Expo Paris</h4><span style="color:var(--text-sub); font-size:0.8rem;">Paris-Nord Villepinte</span></div>
-                </div>
-            </div>
-        </section>
-
-        <section id="partners">
-            <h2 class="section-title">Official Partners</h2>
-            <div class="partner-grid">
-                <div class="partner-logo"><i class="fab fa-playstation"></i><span>GAME STN</span></div>
-                <div class="partner-logo"><i class="fab fa-steam"></i><span>STEAMY</span></div>
-                <div class="partner-logo"><i class="fab fa-discord"></i><span>COMMUNITY</span></div>
-                <div class="partner-logo"><i class="fab fa-spotify"></i><span>MUSIC LBR</span></div>
-                <div class="partner-logo"><i class="fab fa-twitch"></i><span>STREAM</span></div>
-            </div>
-            <div class="collab-cta">
-                <p>Interested in collaboration?</p>
-                <a href="#" class="btn-neon">Contact Me</a>
+        <section id="partners" style="border-bottom:none;">
+            <h2 class="section-title" style="font-size:1.5rem;">Client Works & Partners</h2>
+            <div class="partner-logos">
+                <div class="partner-item">amiami SPOT</div>
+                <div class="partner-item">KOTOBUKIYA</div>
+                <div class="partner-item">東放学園</div>
+                <div class="partner-item">MARUSHIN</div>
+                <div class="partner-item">GET TO PERSONAL</div>
             </div>
         </section>
 
         <footer>
-            <div class="social-links">
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-youtube"></i></a>
-                <a href="#"><i class="fab fa-tiktok"></i></a>
+            <div class="footer-contact">
+                <h3>Ready to collaborate?</h3>
+                <a href="mailto:haruki@animejournal.jp">haruki@animejournal.jp</a>
             </div>
-            <p style="color: #666; font-size: 0.8rem;">&copy; 2025 HARUKI ANIME JOURNAL. All Rights Reserved.</p>
+
+            <div class="social-links">
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-tiktok"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+                <a href="#"><i class="fas fa-envelope"></i></a>
+            </div>
+            
+            <p style="color: #666; font-size: 0.8rem; font-family:var(--font-jp);">
+                &copy; 2025 Haruki Anime Journal (合同会社SAKATA). All Rights Reserved.<br>
+                Tokyo, Japan
+            </p>
         </footer>
     </div>
-
-    <script>
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.hero-slide');
-        const totalSlides = slides.length;
-        let slideInterval;
-
-        // スライドを表示する関数
-        function showSlide(index) {
-            // 範囲外の処理（ループさせる）
-            if (index >= totalSlides) currentSlide = 0;
-            else if (index < 0) currentSlide = totalSlides - 1;
-            else currentSlide = index;
-
-            // すべてのスライドからactiveを外し、対象だけに付与
-            slides.forEach(slide => slide.classList.remove('active'));
-            slides[currentSlide].classList.add('active');
-        }
-
-        // 次/前へ移動する関数（ボタン用）
-        function moveSlide(direction) {
-            showSlide(currentSlide + direction);
-            resetTimer(); // 手動操作したらタイマーをリセット
-        }
-
-        // 自動再生タイマー
-        function startTimer() {
-            slideInterval = setInterval(() => {
-                moveSlide(1);
-            }, 5000); // 5秒ごとに切り替え
-        }
-
-        // タイマーリセット（手動操作時にバッティングしないように）
-        function resetTimer() {
-            clearInterval(slideInterval);
-            startTimer();
-        }
-
-        // 開始
-        startTimer();
-    </script>
 
 </body>
 </html>
